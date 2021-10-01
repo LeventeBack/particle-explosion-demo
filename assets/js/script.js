@@ -160,7 +160,6 @@ class Cell {
       
       if(settings.frameCount == this.frameCount){
         cells.splice(cells.indexOf(this), 1);
-        console.log(this.explosionSize)
       }
 
       ctx.beginPath();
