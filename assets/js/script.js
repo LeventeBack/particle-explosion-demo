@@ -4,14 +4,19 @@ const canvas = document.getElementById("canvas");
 const finalScoreSpan = document.getElementById("final-score");
 const scoreSpan = document.getElementById("score");
 const maxScoreSpan = document.getElementById("max-score");
+const totalScoreSpan = document.getElementById("total-score");
 
 const startScreen = document.getElementById("startscreen");
 const endScreen = document.getElementById("endscreen");
+const claimScreen = document.getElementById("claimscreen");
 
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
+const claimButton = document.getElementById("claim");
 
 const settingsRanges = document.querySelectorAll(".slider");
+
+const muteToggle = document.getElementById('mute-toggle')
 
 // VARIABLES FOR FRAME RATE CONTROL
 let fps = 60;
@@ -21,21 +26,34 @@ let interval = 1000 / fps;
 let delta;
 
 // GLOBAL VARIABLES
+const cells = [];
 let hasStarted = false;
 let nextInit = false;
-let score = 0;
 
-const cells = [];
+let animationLoop = null;
+let rangeIntervals = [];
+
+// SCORE COUNTERS
+const LOCAL_STORAGE_SCORE_KEY = "accumulatedParticles"
+let score = 0;
+let totalAccumulated = parseInt(localStorage.getItem(LOCAL_STORAGE_SCORE_KEY)) || 0
+
+// CANVAS SIZE VARIABLES
 const ctx = canvas.getContext("2d");
 
 let width = window.innerWidth;
 let height = window.innerHeight;
-let particleAmount = ((width * height) / 10000) | 0;
-let animationLoop = null;
-
 canvas.width = width;
 canvas.height = height;
 
+let particleAmount = ((width * height) / 10000) | 0; // CHANGE 10000 to modify the particles value
+
+// AUDIO RELATED VARIABLES
+const LOCAL_STORAGE_AUDIO_MUTE_KEY = "isAudioMuted"
+const backgroundMusic = new Audio("./assets/audio/background-music.mp3");
+let isAudioMuted = localStorage.getItem(LOCAL_STORAGE_AUDIO_MUTE_KEY) || false; 
+
+// PARTICLE SETTINGS AND BEHAVIOUR RELATED VARIABLES
 const BASE_SETTINGS = {
   10: { initialSize: 2.5, frameCount: Math.round(fps * 2.5)},
   20: { initialSize: 6.5, frameCount: Math.round(fps * 2.25)},
@@ -58,31 +76,70 @@ let settings = {
   } 
 };
 
-const backgroundMusic = new Audio("./assets/audio/background-music.mp3");
+const sliderValues = { 
+  maxValue: 100,
+  minValue: 10,
+  step: 10,
+  currentValue: 10,
+  direction: 0
+}
 
 // EVENT LISTENERS
+startButton.addEventListener("click", () => {
+  startScreen.classList.add("hidden");
+  canvas.addEventListener("click", handleCanvasClick);
+
+  if(!isAudioMuted) backgroundMusic.play();
+  backgroundMusic.volume = 1;
+
+  setUpRangeMovement(false)
+});
+
 restartButton.addEventListener("click", () => {
   endScreen.classList.add("hidden");
   hasStarted = false;
   nextInit = true;
+  setUpRangeMovement(false)
 });
 
-startButton.addEventListener("click", () => {
-  startScreen.classList.add("hidden");
-  canvas.addEventListener("click", handleCanvasClick);
-  backgroundMusic.play();
-  backgroundMusic.volume = 1;
-});
+claimButton.addEventListener('click', () => {
+  claimScreen.classList.remove("hidden")
+  claimScreen.addEventListener('animationend', event => {
+    if(event.animationName != "fade-out") return;
+    claimScreen.classList.add('hidden')
+  }) 
+})
 
-settingsRanges.forEach(range => {
-  range.addEventListener('input', () => {
-    const selectedValue = parseInt(range.value);
+muteToggle.addEventListener('click', () => {
+  isAudioMuted = !isAudioMuted;
+  localStorage.setItem(LOCAL_STORAGE_AUDIO_MUTE_KEY, isAudioMuted);
 
-    settings.finalSize = selectedValue;
-    settings.initialSize = BASE_SETTINGS[selectedValue].initialSize;
-    settings.frameCount = BASE_SETTINGS[selectedValue].frameCount;
+  updateMuteButton();
+  isAudioMuted? backgroundMusic.pause() : backgroundMusic.play();
+
+  if(isAudioMuted) cells.forEach(cell => { 
+    if(cell.waterSound) cell.waterSound.pause()
   })
 })
+
+// HELPER FUNCTIONS
+function setUpRangeMovement(flag = true){
+  if(flag) 
+    settingsRanges.forEach((range, index) => {
+      rangeIntervals[index] = setInterval(() => moveSlider(range, index), 100)
+    })
+  else
+    rangeIntervals.forEach(interval => {
+      clearInterval(interval)
+      interval = null;
+    })
+}
+
+function updateMuteButton(){
+  const svgUse = muteToggle.querySelector('use')
+  const svgID = isAudioMuted ? "volume-mute" : "volume-up";
+  svgUse.setAttribute('href', `./assets/img/mute.svg#${svgID}`)
+}
 
 function handleCanvasClick(e) {
   if (hasStarted) return;
@@ -94,10 +151,37 @@ function handleCanvasClick(e) {
   cell.explode();
 }
 
+function moveSlider(range, index){
+  if(index == 0){
+    sliderValues.maxValue = parseInt(range.max) ;  
+    sliderValues.minValue = parseInt(range.min);  
+    sliderValues.step = parseInt(range.step);  
+    sliderValues.currentValue = parseInt(range.value);
+  } 
+
+  if(sliderValues.currentValue >= sliderValues.maxValue) 
+    sliderValues.direction = -1;
+  else if (sliderValues.currentValue <= sliderValues.minValue)
+    sliderValues.direction = 1;
+
+  range.value = sliderValues.currentValue + (sliderValues.direction * sliderValues.step);   
+
+  settings.finalSize = sliderValues.currentValue;
+  settings.initialSize = BASE_SETTINGS[sliderValues.currentValue].initialSize;
+  settings.frameCount = BASE_SETTINGS[sliderValues.currentValue].frameCount;
+   
+  range.style.setProperty("--rotation", `${sliderValues.currentValue/ 100 * 720}deg`);
+}
+
 function resetScore() {
   maxScoreSpan.innerText = particleAmount;
   scoreSpan.innerText = 0;
   score = 0;
+}
+
+function saveScore(){
+  totalAccumulated += score;
+  localStorage.setItem(LOCAL_STORAGE_SCORE_KEY, totalAccumulated);
 }
 
 function getRandomColor(min) {
@@ -118,6 +202,7 @@ function init() {
   cells.length = 0;
   for (let nr = 1; nr < particleAmount; ++nr) cells.push(new Cell());
 
+  
   animate();
 }
 
@@ -136,6 +221,7 @@ class Cell {
     this.explosionSize = settings.initialSize;
 
     this.frameCount = 0;
+    this.waterSound = null;
   }
 
   update() {
@@ -184,9 +270,10 @@ class Cell {
   }
 
   explode() {
-    const waterSound = new Audio("./assets/audio/water.mp3");
-    waterSound.volume = 0.5;
-    waterSound.play();
+
+    this.waterSound = new Audio("./assets/audio/water.mp3");
+    this.waterSound.volume = 0.5;
+    if(!isAudioMuted) this.waterSound.play();
 
     this.exploded = true;
     this.vx = this.vy = 0;
@@ -204,18 +291,20 @@ function draw() {
 
   cells.forEach((cell) => cell.update());
 
-  if (cells.length === 0) gameOver();
+  if (cells.length === 0) showEndScreen();
 }
 
-function gameOver() {
-  cancelAnimationFrame(animationLoop);
-  showEndScreen();
-}
 
 function showEndScreen() {
+  if(!endScreen.classList.contains('hidden')) return;
+
+  saveScore();
   endScreen.classList.remove("hidden");
   finalScoreSpan.innerText = score;
+  totalScoreSpan.innerText = totalAccumulated;
+
   settingsRanges.forEach(r => r.value = settings.finalSize)
+  setUpRangeMovement(true)
 }
 
 function animate() {
@@ -227,9 +316,16 @@ function animate() {
   if (delta > interval) {
     then = now - (delta % interval);
 
-    if (nextInit) (nextInit = false), init();
+    if (nextInit) {
+     nextInit = false
+     init();
+    }
     else draw();
   }
 }
 
+window.onresize = () => location.reload();
+
+updateMuteButton();
+setUpRangeMovement(true);
 init();
