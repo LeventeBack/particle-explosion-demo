@@ -7,6 +7,7 @@
   box-sizing: border-box;
 }  
 body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-image: url('../img/background1.gif');
   background-size: cover;
   background-position: center;
@@ -97,6 +98,30 @@ canvas{
   text-align: center;
   line-height: 1.5;
 }
+
+.font--small {
+  font-size: 14px;
+}
+.font--big {
+  font-size: 18px;
+}
+@media (max-width: 350px) {   
+  .font--small {
+    font-size: 16px;
+  }
+  .font--big {
+    font-size: 20px;
+  }
+}
+
+
+.bg-secondary {
+  background-color:  var(--secondary-color);
+}
+.bg-accent {
+  background-color: var(--accent-color);
+}
+
 .button {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 16px;
@@ -230,4 +255,54 @@ canvas{
   color: black;
   width: 100%;
   height: 100%;
+}
+/* zaps counter */
+.zapcount {
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 12;
+  font-size: 20px;
+}
+/* percent shower */
+.percent-container{
+  --agree: 50%;
+  --disagree: calc(100% - var(--agree));
+
+  display: grid;
+  grid-template-columns: var(--agree) var(--disagree);
+
+  height: 40px;
+  width: 95%;
+  max-width: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+
+  position: relative;
+}
+.percent {
+  height: 100%;
+  width: 100%;
+}
+.percent-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;  
+  bottom: 0;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  padding: 0 15px;
+  text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
 }

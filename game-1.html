@@ -7,7 +7,6 @@
   <title>Particle exploder (mini-game)</title>
   <link rel="stylesheet" href="./assets/css/style.css">
   <link rel="shortcut icon" href="./assets/img/favicon.jpeg" type="image/x-icon">
-  <script src="./assets/js/script.js" defer></script>
 </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -15,6 +14,7 @@
   <div class="stats stats-left">
     <span id="score">0</span> / <span id="max-score">0</span>
   </div>
+
 
   <div id="mute-toggle" class="mute">
     <svg>
@@ -63,6 +63,11 @@
       <h2 class="title">Coming soon...</h2>
     </div>
   </div>
+  
+  <div class="zapcount"><span id="zaps">0</span> zaps remaining</div>
+
+  <script src="./assets/js/zaps.js"></script>
+  <script src="./assets/js/game1.js"></script>
 
 </body>
 </html>

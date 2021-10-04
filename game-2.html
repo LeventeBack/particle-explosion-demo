@@ -7,17 +7,17 @@
   <title>Particle exploder (mini-game)</title>
   <link rel="stylesheet" href="./assets/css/style.css">
   <link rel="shortcut icon" href="./assets/img/favicon.jpeg" type="image/x-icon">
-  <script src="./assets/js/script.js" defer></script>
 </head>
 <body>
   <canvas id="canvas"></canvas>
 
+  
   <div id="mute-toggle" class="mute">
     <svg>
       <use href="./assets/img/mute.svg#volume-up"></use>
     </svg>
   </div>
-
+  
   <div id="startscreen" class="overlay">
     <div class="overlay-content">
       <h1 class="title">Particle Oracle</h1>
@@ -27,31 +27,29 @@
       <button id="start" class="button">START GAME</button>
     </div>
   </div>
-
+  
   <div id="endscreen" class="overlay hidden">
     <div class="overlay-content">
-      <span class="text">Congratulations! <br> You got <span id="final-score">0</span> particles!</span>
-      <button id="restart" class="button">tap more</button>
-      <div class="slider-container">
-        <div class="slider-text-container">
-          <span class="left">Shorter range <br> Longer Explosion</span>
-          <span class="right">Longer range <br> Shorter Explosion</span>
+      <span class="text">The oracle has spoken</span>
+      
+      <div class="percent-container" style="--agree: 50%">
+        <div class="percent bg-secondary"></div>
+        <div class="percent bg-accent"></div>
+        <div class="percent-text">
+          <span class=" font--big">AGREE&nbsp;<span data-percent="agree"></span>%</span>
+          <span class=" font--small"><span data-percent="disagree"></span>%&nbsp;DISAGREE</span>
         </div>
-        <input type="range" min="10" max="100" value="10" step="10" class="slider">
       </div>
+      <span class="text font--small">Congratulations! You got <span id="final-score">0</span> particles for asking.</span>
+      <button id="restart" class="button">tap more</button>
+      
     </div>
-    <!-- <div class="stats stats-right">
-      Accumulated <br>
-      <span id="total-score"></span> <br>
-      <button id="claim" class="button">CLAIM NOW</button>
-    </div> -->
   </div>
-<!-- 
-  <div id="claimscreen" class="overlay overlay--claim hidden">
-    <div class="overlay-content">
-      <h2 class="title">Coming soon...</h2>
-    </div>
-  </div> -->
 
-</body>
-</html>
+  <div class="zapcount"><span id="zaps">0</span> zaps remaining</div>
+    
+    <script src="./assets/js/zaps.js"></script>
+    <script src="./assets/js/game2.js"></script>
+    
+  </body>
+  </html>
