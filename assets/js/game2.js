@@ -303,7 +303,7 @@ function animate() {
 }
 
 function displayPercentages(){
-  const agree = Math.floor(score  * 100 / particleAmount * 100) / 100;
+  const agree = (score  * 100 / particleAmount).toFixed(2);
   const disagree = 100 - agree;
 
   percentAgree.innerText = agree;
