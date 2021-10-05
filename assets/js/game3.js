@@ -2,6 +2,9 @@
 const canvas = document.getElementById("canvas");
 
 const finalScoreSpan = document.getElementById("final-score");
+const scoreSpan = document.getElementById("score");
+const maxScoreSpan = document.getElementById("max-score");
+const totalScoreSpan = document.getElementById("total-score");
 
 const startScreen = document.getElementById("startscreen");
 const endScreen = document.getElementById("endscreen");
@@ -9,11 +12,9 @@ const endScreen = document.getElementById("endscreen");
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
 
-const muteToggle = document.getElementById('mute-toggle')
+const settingsRanges = document.querySelectorAll(".slider");
 
-const percentContainer = document.querySelector('.percent-container')
-const percentAgree = document.querySelector('[data-percent="agree"]')
-const percentDisagree = document.querySelector('[data-percent="disagree"]')
+const muteToggle = document.getElementById('mute-toggle')
 
 // VARIABLES FOR FRAME RATE CONTROL
 let fps = 60;
@@ -28,12 +29,14 @@ let hasStarted = false;
 let nextInit = false;
 
 let animationLoop = null;
-let sliderInterval = [];
+let rangeIntervals = [];
 
 // SCORE COUNTERS
 const LOCAL_STORAGE_SCORE_KEY = "accumulatedParticles"
 let score = 0;
 let totalAccumulated = parseInt(localStorage.getItem(LOCAL_STORAGE_SCORE_KEY)) || 0
+
+totalScoreSpan.innerText = totalAccumulated;
 
 // CANVAS SIZE VARIABLES
 const ctx = canvas.getContext("2d");
@@ -49,8 +52,6 @@ let particleAmount = ((width * height) / 10000) | 0; // CHANGE 10000 to modify t
 const LOCAL_STORAGE_AUDIO_MUTE_KEY = "isAudioMuted"
 const backgroundMusic = new Audio("./assets/audio/background-music.mp3");
 let isAudioMuted = localStorage.getItem(LOCAL_STORAGE_AUDIO_MUTE_KEY) || false; 
-
-let recordedQuestionAudio;
 
 // PARTICLE SETTINGS AND BEHAVIOUR RELATED VARIABLES
 const BASE_SETTINGS = {
@@ -83,9 +84,12 @@ const sliderValues = {
   direction: 0
 }
 
+
+let maxSize = 17, minSize = 3, maxV = 8;
+
 class Cell {
   constructor(x, y) {
-    this.color = getRandomColor();
+    this.color = getRandomColor(100);
     this.size = Math.random() * (maxSize - minSize) + minSize;
     this.initialSize = this.size;
     this.x = x || Math.random() * width;
@@ -97,6 +101,8 @@ class Cell {
 
     this.frameCount = 0;
     this.waterSound = null;
+
+    console.log(this.size, this.initialSize, this.vx, this.vy);
   }
 
   update() {
@@ -145,42 +151,45 @@ class Cell {
   }
 
   explode() {
+
     this.waterSound = new Audio("./assets/audio/water.mp3");
     this.waterSound.volume = 0.5;
     if(!isAudioMuted) this.waterSound.play();
 
     this.exploded = true;
     this.vx = this.vy = 0;
-    ++score;
+    scoreSpan.textContent = ++score;
   }
 }
 
 // EVENT LISTENERS
 startButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return;
+  }
   updateDailyGames()
-  
-  audioRecording(startButton, () => {
-    startScreen.classList.add("hidden");
-    canvas.addEventListener("click", handleCanvasClick);
-  
-    if(!isAudioMuted) backgroundMusic.play();
-    backgroundMusic.volume = 1;
-  
-    setUpRangeMovement(false)    
-  });
+
+  startScreen.classList.add("hidden");
+  canvas.addEventListener("click", handleCanvasClick);
+
+  if(!isAudioMuted) backgroundMusic.play();
+  backgroundMusic.volume = 1;
+
+  setUpRangeMovement(false)
 });
 
 restartButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return 
+  } 
   updateDailyGames()
- 
-  audioRecording(restartButton, () => {
-    endScreen.classList.add("hidden");
-    hasStarted = false;
-    nextInit = true;
-    setUpRangeMovement(false)
-  });  
+
+  endScreen.classList.add("hidden");
+  hasStarted = false;
+  nextInit = true;
+  setUpRangeMovement(false)
 });
 
 muteToggle.addEventListener('click', () => {
@@ -198,11 +207,14 @@ muteToggle.addEventListener('click', () => {
 // HELPER FUNCTIONS
 function setUpRangeMovement(flag = true){
   if(flag) 
-    sliderInterval = setInterval(() => moveInvisibleSlider(), 100)
-  else {
-    clearInterval(sliderInterval)
-    sliderInterval = null;
-  }
+    settingsRanges.forEach((range, index) => {
+      rangeIntervals[index] = setInterval(() => moveSlider(range, index), 100)
+    })
+  else
+    rangeIntervals.forEach(interval => {
+      clearInterval(interval)
+      interval = null;
+    })
 }
 
 function updateMuteButton(){
@@ -213,7 +225,7 @@ function updateMuteButton(){
 
 function handleCanvasClick(e) {
   if (hasStarted) return;
-
+  
   hasStarted = true;
 
   const cell = new Cell(e.clientX, e.clientY);
@@ -221,33 +233,45 @@ function handleCanvasClick(e) {
   cell.explode();
 }
 
-function moveInvisibleSlider(){
-  sliderValues.currentValue += (sliderValues.direction * sliderValues.step); 
+function moveSlider(range, index){
+  if(index == 0){
+    sliderValues.maxValue = parseInt(range.max) ;  
+    sliderValues.minValue = parseInt(range.min);  
+    sliderValues.step = parseInt(range.step);  
+    sliderValues.currentValue = parseInt(range.value);
+  } 
 
   if(sliderValues.currentValue >= sliderValues.maxValue) 
     sliderValues.direction = -1;
   else if (sliderValues.currentValue <= sliderValues.minValue)
-    sliderValues.direction = 1; 
+    sliderValues.direction = 1;
+
+  range.value = sliderValues.currentValue + (sliderValues.direction * sliderValues.step);   
 
   settings.finalSize = sliderValues.currentValue;
   settings.initialSize = BASE_SETTINGS[sliderValues.currentValue].initialSize;
   settings.frameCount = BASE_SETTINGS[sliderValues.currentValue].frameCount;
+   
+  range.style.setProperty("--rotation", `${sliderValues.currentValue/ 100 * 720}deg`);
 }
 
 function resetScore() {
+  maxScoreSpan.innerText = particleAmount;
+  scoreSpan.innerText = 0;
   score = 0;
 }
 
 function saveScore(){
-  totalAccumulated += Math.min(score, particleAmount - score);
+  totalAccumulated += score;
   localStorage.setItem(LOCAL_STORAGE_SCORE_KEY, totalAccumulated);
 }
 
-function getRandomColor() {
-  const COLORS = ["#73fff1", "#C42FED"];
-  const randomIndex = Math.floor(Math.random() * 2);
+function getRandomColor(min) {
+  const r = getRandomNumberBetween(min, 255);
+  const g = getRandomNumberBetween(min, 255);
+  const b = getRandomNumberBetween(min, 255);
 
-  return COLORS[randomIndex];
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 function getRandomNumberBetween(min, max) {
@@ -260,10 +284,10 @@ function init() {
   cells.length = 0;
   for (let nr = 1; nr < particleAmount; ++nr) cells.push(new Cell());
 
+  
   animate();
 }
 
-let maxSize = 10, minSize = 6, maxV = 4;
 
 function draw() {
   if (hasStarted && cells.every((c) => c.exploded == 0)) {
@@ -282,15 +306,13 @@ function draw() {
 function showEndScreen() {
   if(!endScreen.classList.contains('hidden')) return;
 
-  recordedQuestionAudio.play();
-
   saveScore();
   endScreen.classList.remove("hidden");
-  finalScoreSpan.innerText = Math.min(score, particleAmount - score);
+  finalScoreSpan.innerText = score;
+  totalScoreSpan.innerText = totalAccumulated;
 
-  displayPercentages();
-  
-  setUpRangeMovement(true)  
+  settingsRanges.forEach(r => r.value = settings.finalSize)
+  setUpRangeMovement(true)
 }
 
 function animate() {
@@ -308,42 +330,6 @@ function animate() {
     }
     else draw();
   }
-}
-
-function displayPercentages(){
-  const agree = (score  * 100 / particleAmount).toFixed(2);
-  const disagree = 100 - agree;
-
-  percentAgree.innerText = agree;
-  percentDisagree.innerText = disagree;
-
-  percentContainer.style.setProperty('--agree', `${agree}%`)
-}
-
-function audioRecording(button, callback){
-  navigator.mediaDevices.getUserMedia({ audio: true })
-  .then(stream => {
-    const mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.start();
-    button.innerText = "Listening..."
-
-    const audioChunks = [];
-    mediaRecorder.addEventListener("dataavailable", event => {
-      audioChunks.push(event.data);
-    });
-    
-    mediaRecorder.addEventListener("stop", () => {
-      const audioBlob = new Blob(audioChunks);
-      const audioUrl = URL.createObjectURL(audioBlob);
-      recordedQuestionAudio = new Audio(audioUrl);
-    });
-
-    setTimeout(() => {
-      mediaRecorder.stop();
-      button.innerText = "ask oracle your question";
-      callback();
-    }, 5000);
-  });
 }
 
 window.onresize = () => location.reload();

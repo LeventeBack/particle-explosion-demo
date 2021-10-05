@@ -126,19 +126,22 @@ canvas{
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 16px;
   background-color: var(--primary-color);
-  width: 150px;
+  width: 160px;
   text-align: center;
   color: black;
   margin: 10px;
-  text-align: none;
   text-transform: uppercase;
   text-decoration: none;
   border: none;
-  padding: 15px;
+  height: 65px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: bold;  
   transition: background-color 0.2s;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button:hover,
 .button:active {
