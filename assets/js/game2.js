@@ -26,6 +26,7 @@ let delta;
 const cells = [];
 let hasStarted = false;
 let nextInit = false;
+let clicked = false;
 
 let animationLoop = null;
 let sliderInterval = [];
@@ -157,22 +158,37 @@ class Cell {
 
 // EVENT LISTENERS
 startButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return;
+  } 
+
+  if(clicked) return;
+
+  clicked = true;
   updateDailyGames()
-  
+    
   audioRecording(startButton, () => {
     startScreen.classList.add("hidden");
     canvas.addEventListener("click", handleCanvasClick);
   
     if(!isAudioMuted) backgroundMusic.play();
     backgroundMusic.volume = 1;
-  
+    
     setUpRangeMovement(false)    
   });
 });
 
 restartButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return;
+  } 
+
+  if(clicked) return;
+
+  clicked = true;
+  
   updateDailyGames()
  
   audioRecording(restartButton, () => {
@@ -289,6 +305,8 @@ function showEndScreen() {
   finalScoreSpan.innerText = Math.min(score, particleAmount - score);
 
   displayPercentages();
+  
+  clicked = false;
   
   setUpRangeMovement(true)  
 }
