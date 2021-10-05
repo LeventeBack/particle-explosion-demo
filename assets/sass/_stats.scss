@@ -1,0 +1,29 @@
+.stats {
+  background-color:rgba(255, 255, 255, 0.3);
+  color:white;
+  font-size:20px;
+  text-align: center;
+  font-weight: bold;
+
+  position:absolute;
+  top:0px; 
+  min-width: 100px;
+  z-index: 10;
+
+  &-left {
+    left:0px;
+    padding: 20px 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  &-right {
+    right: 0;
+    border-bottom-left-radius: 15px;
+    padding: 5px;
+  }
+  
+  & .button {
+    padding: 5px;
+    margin: 5px;
+  }
+}

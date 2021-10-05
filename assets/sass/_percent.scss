@@ -1,0 +1,40 @@
+.percent {
+  height: 100%;
+  width: 100%;
+
+  &-container{
+    --agree: 50%;
+    --disagree: calc(100% - var(--agree));
+
+    display: grid;
+    grid-template-columns: var(--agree) var(--disagree);
+
+    height: 40px;
+    width: 95%;
+    max-width: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+
+    position: relative;
+  }
+
+  &-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;  
+    bottom: 0;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    padding: 0 15px;
+    text-shadow:
+    -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+}

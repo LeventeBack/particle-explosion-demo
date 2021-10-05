@@ -1,0 +1,21 @@
+.mute {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  z-index: 10;
+  background-color: var(--primary-color);
+  width: 45px;
+  height: 45px;
+  padding: 10px;
+  border-radius: 100% ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > svg {
+    cursor: pointer;
+    color: black;
+    width: 100%;
+    height: 100%;
+  }
+}
