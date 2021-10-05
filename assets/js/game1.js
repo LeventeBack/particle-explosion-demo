@@ -162,7 +162,10 @@ class Cell {
 
 // EVENT LISTENERS
 startButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return;
+  }
   updateDailyGames()
 
   startScreen.classList.add("hidden");
@@ -175,7 +178,10 @@ startButton.addEventListener("click", () => {
 });
 
 restartButton.addEventListener("click", () => {
-  if(zaps <= 0) return alert(NO_REMAINING_ZAPS_ALERT); 
+  if(zaps <= 0) {
+    alert(NO_REMAINING_ZAPS_ALERT); 
+    return 
+  } 
   updateDailyGames()
 
   endScreen.classList.add("hidden");

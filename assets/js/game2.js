@@ -233,7 +233,7 @@ function resetScore() {
 }
 
 function saveScore(){
-  totalAccumulated += score;
+  totalAccumulated += Math.min(score, particleAmount - score);
   localStorage.setItem(LOCAL_STORAGE_SCORE_KEY, totalAccumulated);
 }
 
@@ -278,7 +278,7 @@ function showEndScreen() {
 
   saveScore();
   endScreen.classList.remove("hidden");
-  finalScoreSpan.innerText = score;
+  finalScoreSpan.innerText = Math.min(score, particleAmount - score);
 
   displayPercentages();
   
