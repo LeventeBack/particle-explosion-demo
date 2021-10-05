@@ -30,7 +30,7 @@
   
   <div id="endscreen" class="overlay hidden">
     <div class="overlay-content">
-      <span class="text">The oracle has spoken</span>
+      <span class="text">The oracle has spoken, <span class="username"></span>.</span>
       
       <div class="percent-container" style="--agree: 50%">
         <div class="percent bg-secondary"></div>
@@ -43,12 +43,17 @@
       <span class="text font--small">Congratulations! You got <span id="final-score">0</span> particles for asking.</span>
       <button id="restart" class="button">ask oracle your question</button>
       
+      <div class="previous-container">
+        <button class="previous-toggle">Check previous results</button>
+        <ul class="previous-list hidden">
+        </ul> 
+      </div>
     </div>
   </div>
 
   <div class="zapcount"><span id="zaps">0</span> zaps remaining</div>
     
-    <script src="./assets/js/zaps.js"></script>
+    <script src="./assets/js/common.js"></script>
     <script src="./assets/js/game2.js"></script>
     
   </body>

@@ -15,6 +15,9 @@ const percentContainer = document.querySelector('.percent-container')
 const percentAgree = document.querySelector('[data-percent="agree"]')
 const percentDisagree = document.querySelector('[data-percent="disagree"]')
 
+const previousToggle = document.querySelector('.previous-toggle')
+const previousList = document.querySelector('.previous-list')
+
 // VARIABLES FOR FRAME RATE CONTROL
 let fps = 60;
 let now;
@@ -35,6 +38,10 @@ let sliderInterval = [];
 const LOCAL_STORAGE_SCORE_KEY = "accumulatedParticles"
 let score = 0;
 let totalAccumulated = parseInt(localStorage.getItem(LOCAL_STORAGE_SCORE_KEY)) || 0
+
+// GAME HISTORY
+const LOCAL_STORAGE_GAME_HISTORY_KEY = "oracleGameHistory";
+const oracleGameHistory = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GAME_HISTORY_KEY)) || [];
 
 // CANVAS SIZE VARIABLES
 const ctx = canvas.getContext("2d");
@@ -211,6 +218,10 @@ muteToggle.addEventListener('click', () => {
   })
 })
 
+previousToggle.addEventListener('click', () => {
+  previousList.classList.toggle('hidden')
+})
+
 // HELPER FUNCTIONS
 function setUpRangeMovement(flag = true){
   if(flag) 
@@ -330,12 +341,34 @@ function animate() {
 
 function displayPercentages(){
   const agree = (score  * 100 / particleAmount).toFixed(2);
-  const disagree = 100 - agree;
+  const disagree = (100 - agree).toFixed(2);;
 
   percentAgree.innerText = agree;
   percentDisagree.innerText = disagree;
 
   percentContainer.style.setProperty('--agree', `${agree}%`)
+
+  updateGameHistory(agree, disagree);
+}
+
+function updateGameHistory(agree, disagree){
+  const HISTORY_TEXTS = ["!!! DISAGREE !!!", "!!! AGREE !!!"];
+
+  
+  let listHTML = "";
+  for(let i = 0; i < Math.min(3, oracleGameHistory.length); i++) {
+    const hasAgreed = oracleGameHistory[i] ? 1 : 0;
+    const listItemText = HISTORY_TEXTS[hasAgreed];
+    const listItemClass = hasAgreed? 'agree' : 'disagree';
+    
+    listHTML += `<li class="${listItemClass}">${listItemText}</li>`
+  }
+
+  previousList.innerHTML = listHTML;
+  
+  const hasAgreed = agree >= disagree;
+  oracleGameHistory.unshift(hasAgreed);
+  localStorage.setItem(LOCAL_STORAGE_GAME_HISTORY_KEY, JSON.stringify(oracleGameHistory));
 }
 
 function audioRecording(button, callback){

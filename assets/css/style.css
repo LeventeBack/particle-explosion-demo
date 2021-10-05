@@ -91,8 +91,11 @@ canvas {
   color: white;
 }
 
-.overlay--claim {
+.overlay--dark {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+.overlay-claim {
   animation: fade-out 0.3s ease-in-out 3s forwards;
 }
 
@@ -269,6 +272,77 @@ canvas {
   font-size: 20px;
 }
 
+.previous-container {
+  position: relative;
+}
+
+.previous-toggle {
+  margin-top: 10px;
+  background-color: var(--primary-color);
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  cursor: pointer;
+}
+
+.previous-list {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+  margin-top: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.previous-list > li {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  margin: 3px 0;
+  border: 1px solid transparent;
+  opacity: 0;
+  animation: fade-up 0.3s forwards;
+}
+
+.previous-list > li.agree {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.previous-list > li.disagree {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.previous-list > li:nth-child(1n) {
+  animation-delay: 0.25s;
+}
+
+.previous-list > li:nth-child(2n) {
+  animation-delay: 0.5s;
+}
+
+.previous-list > li:nth-child(3n) {
+  animation-delay: 0.75s;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.form .name-input {
+  background-color: white;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 20px;
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;
@@ -284,6 +358,17 @@ canvas {
   }
   to {
     transform: scale(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(-70px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

@@ -7,8 +7,10 @@
   background-color: rgba(0, 0, 0, .3);
   color: white;
 
-  &--claim {
+  &--dark {
     background-color: rgba(0, 0, 0, .7);
+  }
+  &-claim {
     animation: fade-out 0.3s ease-in-out 3s forwards;
   }
 
