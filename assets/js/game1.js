@@ -8,11 +8,9 @@ const totalScoreSpan = document.getElementById("total-score");
 
 const startScreen = document.getElementById("startscreen");
 const endScreen = document.getElementById("endscreen");
-const claimScreen = document.getElementById("claimscreen");
 
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
-const claimButton = document.getElementById("claim");
 
 const settingsRanges = document.querySelectorAll(".slider");
 
@@ -53,13 +51,6 @@ restartButton.addEventListener("click", () => {
   setUpRangeMovement(false)
 });
 
-claimButton.addEventListener('click', () => {
-  claimScreen.classList.remove("hidden")
-  claimScreen.addEventListener('animationend', event => {
-    if(event.animationName != "fade-out") return;
-    claimScreen.classList.add('hidden')
-  }) 
-})
 
 muteToggle.addEventListener('click', () => {
   isAudioMuted = !isAudioMuted;

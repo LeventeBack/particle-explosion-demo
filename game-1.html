@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Particle exploder (mini-game)</title>
+  <title>Tardible Match</title>
   <link rel="stylesheet" href="./assets/css/style.css">
   <link rel="shortcut icon" href="./assets/img/favicon.jpeg" type="image/x-icon">
 </head>
@@ -24,7 +24,7 @@
 
   <div id="startscreen" class="overlay">
     <div class="overlay-content">
-      <h1 class="title">Particle exploder (mini-game)</h1>
+      <h1 class="title">Tardible Match</h1>
       <p class="rules">
         Click anywhere to make an explosion. If any of the squares will bump into your explosion they'll explode aswell, making a chain reaction. See how many squares you can get! Click again to start a new game
       </p>
@@ -54,15 +54,10 @@
     <div class="stats stats-right">
       Accumulated <br>
       <span id="total-score"></span> <br>
-      <button id="claim" class="button">CLAIM NOW</button>
+      <a href="./claim-reward.html" class="button button--small" id="claim">CLAIM NOW</a>
     </div>
   </div>
 
-  <div id="claimscreen" class="overlay overlay--dark overlay-claim hidden">
-    <div class="overlay-content">
-      <h2 class="title">Coming soon...</h2>
-    </div>
-  </div>
   
   <div class="zapcount"><span id="zaps">0</span> zaps remaining</div>
 

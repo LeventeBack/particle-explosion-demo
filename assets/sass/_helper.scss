@@ -5,6 +5,9 @@
 .bg-accent {
   background-color: var(--accent-color);
 }
+.flex-center {
+  @include flex-center;
+}
 .hidden {
   display: none;
 }

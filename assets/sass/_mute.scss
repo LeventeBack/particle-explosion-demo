@@ -8,9 +8,8 @@
   height: 45px;
   padding: 10px;
   border-radius: 100% ;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+  @include flex-center;
 
   & > svg {
     cursor: pointer;

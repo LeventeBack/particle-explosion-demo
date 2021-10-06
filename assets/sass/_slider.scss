@@ -5,6 +5,8 @@
     max-width: 500px;
   }
 
+  @include gradient-background;
+
   -webkit-appearance: none;
   width: 100%;
   height: 15px;
@@ -13,15 +15,10 @@
   border-radius: 8px;
   position: relative;
 
-  background: var(--accent-color);
-  background: -moz-linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
-  background: -webkit-linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
-  background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c42fed",endColorstr="#29d9a7",GradientType=1);
-
   --rotation: 0deg;
   
   &::-webkit-slider-thumb {
+    @include gradient-background;
     -webkit-appearance: none;
     appearance: none;
     width: 40px;
@@ -31,26 +28,15 @@
 
     border: 2px solid var(--secondary-color);
 
-    background: var(--primary-color);
-    background: -moz-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    background: -webkit-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    background: linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c42fed",endColorstr="#29d9a7",GradientType=1);
-
     transform: rotate(var(--rotation))
   }
   &::-moz-range-thumb {
+    @include gradient-background;
     width: 40px;
     height: 40px;
     border-radius: 100%;
     cursor: pointer;
     border: 2px solid var(--secondary-color);
-    background: var(--primary-color);
-    background: -moz-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    background: -webkit-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    background: linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c42fed",endColorstr="#29d9a7",GradientType=1);
-
     animation: rotate-it 0.5s ease-in-out infinite;
   }
 

@@ -1,0 +1,22 @@
+@mixin absolute-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@mixin flex-center($direction: column) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: $direction;
+}
+
+@mixin gradient-background {
+  background: var(--primary-color);
+  background: -moz-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
+  background: -webkit-linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
+  background: linear-gradient(270deg, var(--accent-color) 0%, var(--primary-color) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c42fed",endColorstr="#29d9a7",GradientType=1);
+}
